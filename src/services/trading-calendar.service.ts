@@ -153,7 +153,7 @@ function getUsHolidayDateKeys(year: number) {
 
 function shouldIncludeTwHoliday(name: string, description: string) {
   const combined = `${name} ${description}`;
-  return !combined.includes("¶}©l¥æ©ö") && !combined.includes("³Ì«á¥æ©ö");
+  return !combined.includes("é–‹å§‹äº¤æ˜“") && !combined.includes("æœ€å¾Œäº¤æ˜“");
 }
 
 async function loadTwHolidayDateKeys(year: number) {
