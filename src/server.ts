@@ -10,10 +10,31 @@ const port = Number(process.env.PORT) || 3001;
 const corsOrigins = process.env.CORS_ORIGIN?.split(",")
   .map((origin) => origin.trim())
   .filter(Boolean);
+const sslipSuffixMatch = process.env.COOLIFY_URL?.match(
+  /^https?:\/\/[^.]+\.(.+\.sslip\.io)$/
+);
+const sharedSslipSuffix = sslipSuffixMatch?.[1];
 
 app.use(
   cors({
-    origin: corsOrigins && corsOrigins.length > 0 ? corsOrigins : true,
+    origin(origin, callback) {
+      if (!origin) {
+        callback(null, true);
+        return;
+      }
+
+      if (corsOrigins?.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+
+      if (sharedSslipSuffix && origin.endsWith(`.${sharedSslipSuffix}`)) {
+        callback(null, true);
+        return;
+      }
+
+      callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
   })
 );
