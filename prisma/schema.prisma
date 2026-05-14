@@ -3,22 +3,21 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
 }
 
 model User {
-  id           Int       @id @default(autoincrement())
-  email        String?   @unique
-  phone        String?   @unique
-  appleId      String?   @unique
-  passwordHash String?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-
-  accounts     Account[]
-  bankAccounts BankAccount[]
-  holdings     Holding[]
-  orders       Order[]
+  id               Int               @id @default(autoincrement())
+  email            String?           @unique
+  phone            String?           @unique
+  appleId          String?           @unique
+  passwordHash     String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  accounts         Account[]
+  bankAccounts     BankAccount[]
+  holdings         Holding[]
+  orders           Order[]
   cashTransactions CashTransaction[]
 }
 
@@ -30,21 +29,19 @@ model Account {
   reservedCash Float    @default(0)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-
   user         User?    @relation(fields: [userId], references: [id])
 
   @@unique([userId, currency])
 }
 
 model BankAccount {
-  id         Int      @id @default(autoincrement())
-  userId     Int?
-  currency   String   @default("TWD")
-  cash       Float
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  user       User?    @relation(fields: [userId], references: [id])
+  id        Int      @id @default(autoincrement())
+  userId    Int?
+  currency  String   @default("TWD")
+  cash      Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User?    @relation(fields: [userId], references: [id])
 
   @@unique([userId, currency])
 }
@@ -61,41 +58,39 @@ model Holding {
   averageCost      Float
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
-
   user             User?    @relation(fields: [userId], references: [id])
 
   @@unique([userId, market, symbol])
 }
 
 model Order {
-  id          Int       @id @default(autoincrement())
-  userId      Int?
-  market      String    @default("TW")
-  currency    String    @default("TWD")
-  symbol      String
-  name        String
-  side        String
-  orderType   String    @default("MARKET")
-  status      String    @default("FILLED")
-  price       Float
-  limitPrice  Float?
-  filledPrice Float?
-  quantity    Int
-  amount      Float
-  fee         Float     @default(0)
-  tax         Float     @default(0)
-  netAmount   Float     @default(0)
-  realizedPnL Float     @default(0)
+  id                      Int      @id @default(autoincrement())
+  userId                  Int?
+  market                  String   @default("TW")
+  currency                String   @default("TWD")
+  symbol                  String
+  name                    String
+  side                    String
+  orderType               String   @default("MARKET")
+  status                  String   @default("FILLED")
+  price                   Float
+  limitPrice              Float?
+  filledPrice             Float?
+  quantity                Int
+  amount                  Float
+  fee                     Float    @default(0)
+  tax                     Float    @default(0)
+  netAmount               Float    @default(0)
+  realizedPnL             Float    @default(0)
   availableCashBefore     Float?
   availableCashAfter      Float?
   availableQuantityBefore Int?
   availableQuantityAfter  Int?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @default(now()) @updatedAt
-  filledAt    DateTime?
-  cancelledAt DateTime?
-
-  user        User?     @relation(fields: [userId], references: [id])
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @default(now()) @updatedAt
+  filledAt                DateTime?
+  cancelledAt             DateTime?
+  user                    User?    @relation(fields: [userId], references: [id])
 }
 
 model CashTransaction {
@@ -110,6 +105,5 @@ model CashTransaction {
   brokerCashAfter  Float
   note             String?
   createdAt        DateTime @default(now())
-
   user             User     @relation(fields: [userId], references: [id])
 }
